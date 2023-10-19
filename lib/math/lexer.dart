@@ -29,6 +29,15 @@ class Token {
   Token(this.kind, [this.value]);
 
   @override
+  bool operator ==(Object other) {
+    if (other is! Token) return false;
+    return kind == other.kind && value == other.value;
+  }
+
+  @override
+  int get hashCode => kind.hashCode ^ value.hashCode;
+
+  @override
   String toString() {
     final buffer = StringBuffer('Token(')..write(kind.format());
     if (value != null) {

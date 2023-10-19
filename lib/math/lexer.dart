@@ -2,8 +2,8 @@ import 'package:lazy/math/reader.dart';
 
 enum TokenKind {
   number,
+  ident,
   operator,
-  metric,
   leftParen,
   rightParen,
   illegal,
@@ -13,8 +13,8 @@ extension on TokenKind {
   String format() {
     return switch (this) {
       TokenKind.number => 'number',
+      TokenKind.ident => 'ident',
       TokenKind.operator => 'operator',
-      TokenKind.metric => 'metric',
       TokenKind.leftParen => 'leftParen',
       TokenKind.rightParen => 'rightParen',
       TokenKind.illegal => 'illegal',
@@ -31,7 +31,12 @@ class Token {
   @override
   String toString() {
     final buffer = StringBuffer('Token(')..write(kind.format());
-    if (value != null) buffer.writeAll([', ', value]);
+    if (value != null) {
+      buffer.write(', ');
+      if (kind == TokenKind.ident) buffer.write('"');
+      buffer.write(value);
+      if (kind == TokenKind.ident) buffer.write('"');
+    }
     buffer.write(')');
 
     return buffer.toString();
@@ -58,6 +63,11 @@ class Lexer {
       if (next == 10 || next == 32) continue;
       if (next >= 48 && next <= 57) {
         tokens.add(_readNumber(reader.pos));
+        continue;
+      }
+
+      if (next >= 65 && next <= 90 || next >= 97 && next <= 122) {
+        tokens.add(_readIdent(reader.pos));
         continue;
       }
 
@@ -96,5 +106,20 @@ class Lexer {
     }
 
     return Token(TokenKind.number, reader.getRange(start, stop));
+  }
+
+  Token _readIdent(int start) {
+    var stop = start + 1;
+
+    while (reader.remaining()) {
+      var next = reader.next();
+      if (next >= 65 && next <= 90 || next >= 97 && next <= 122) continue;
+
+      stop = reader.pos;
+      reader.previous();
+      break;
+    }
+
+    return Token(TokenKind.ident, reader.getRange(start, stop));
   }
 }

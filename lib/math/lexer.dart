@@ -39,6 +39,9 @@ class Token {
 }
 
 class Lexer {
+  // '*' | '+' | '-' | '/'
+  final operators = const [42, 43, 45, 47];
+
   late Reader reader;
 
   Lexer(String input) {
@@ -55,6 +58,21 @@ class Lexer {
       if (next == 10 || next == 32) continue;
       if (next >= 48 && next <= 57) {
         tokens.add(_readNumber(reader.pos));
+        continue;
+      }
+
+      if (operators.contains(next)) {
+        tokens.add(Token(TokenKind.operator, reader.currentString));
+        continue;
+      }
+
+      if (next == 40) {
+        tokens.add(Token(TokenKind.leftParen));
+        continue;
+      }
+
+      if (next == 41) {
+        tokens.add(Token(TokenKind.rightParen));
         continue;
       }
       if (next == 0) break;

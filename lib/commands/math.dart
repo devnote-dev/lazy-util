@@ -1,4 +1,5 @@
 import 'package:args/command_runner.dart';
+import 'package:lazy/math/lexer.dart';
 
 class MathCommand extends Command<int> {
   @override
@@ -9,7 +10,13 @@ class MathCommand extends Command<int> {
 
   @override
   int run() {
-    print(argResults?.arguments);
+    if (argResults!.arguments.isEmpty) {
+      print('No arguments provided.');
+      return 1;
+    }
+
+    final lexer = Lexer(argResults!.arguments.join());
+    print(lexer.read());
 
     return 0;
   }

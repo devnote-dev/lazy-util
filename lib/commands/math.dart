@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
-import 'package:lazy/math/lexer.dart';
+
+import '../math/lexer.dart';
 
 class MathCommand extends Command<int> {
   @override

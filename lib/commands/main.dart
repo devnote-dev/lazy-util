@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:lazy/commands/math.dart';
+
+import '../commands/math.dart';
 
 class MainCommand extends CommandRunner<int> {
   MainCommand() : super('lazy', 'Lazy utility commands') {

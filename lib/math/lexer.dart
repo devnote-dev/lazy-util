@@ -1,4 +1,4 @@
-import 'package:lazy/math/reader.dart';
+import 'reader.dart';
 
 enum TokenKind {
   number,

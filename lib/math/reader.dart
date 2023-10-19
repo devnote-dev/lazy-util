@@ -21,13 +21,7 @@ class Reader {
     return true;
   }
 
-  int? next() {
-    if (_end) return null;
-    if (_pos + 1 >= input.length) {
-      _end = true;
-      return null;
-    }
-
+  int next() {
     _pos++;
     return current;
   }

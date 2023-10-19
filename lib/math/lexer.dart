@@ -48,9 +48,8 @@ class Lexer {
   List<Token> read() {
     final tokens = <Token>[];
 
-    while (true) {
-      if (!reader.remaining()) break;
-      var next = reader.next()!;
+    while (reader.remaining()) {
+      var next = reader.next();
 
       // '\n' && ' '
       if (next == 10 || next == 32) continue;
@@ -70,7 +69,7 @@ class Lexer {
     var stop = start + 1;
 
     while (reader.remaining()) {
-      var next = reader.next()!;
+      var next = reader.next();
       if (next >= 48 && next <= 57) continue;
 
       stop = reader.pos;

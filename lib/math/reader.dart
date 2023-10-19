@@ -1,5 +1,5 @@
 class Reader {
-  late List<int> input;
+  late final List<int> input;
   int _pos = -1;
   bool _end = false;
 

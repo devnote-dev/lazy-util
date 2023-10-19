@@ -6,11 +6,10 @@ enum TokenKind {
   operator,
   leftParen,
   rightParen,
-  illegal,
-}
+  illegal;
 
-extension on TokenKind {
-  String format() {
+  @override
+  String toString() {
     return switch (this) {
       TokenKind.number => 'number',
       TokenKind.ident => 'ident',
@@ -23,8 +22,8 @@ extension on TokenKind {
 }
 
 class Token {
-  TokenKind kind;
-  String? value;
+  final TokenKind kind;
+  final String? value;
 
   Token(this.kind, [this.value]);
 
@@ -39,7 +38,8 @@ class Token {
 
   @override
   String toString() {
-    final buffer = StringBuffer('Token(')..write(kind.format());
+    final buffer = StringBuffer('Token(')..write(kind);
+
     if (value != null) {
       buffer.write(', ');
       if (kind == TokenKind.ident) buffer.write('"');
@@ -56,7 +56,7 @@ class Lexer {
   // '*' | '+' | '-' | '/'
   final operators = const [42, 43, 45, 47];
 
-  late Reader reader;
+  late final Reader reader;
 
   Lexer(String input) {
     reader = Reader(input);

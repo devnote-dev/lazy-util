@@ -1,3 +1,5 @@
+import 'lexer.dart' show TokenKind;
+
 sealed class Node {}
 
 class Statement extends Node {}
@@ -53,5 +55,17 @@ enum Precedence {
   lessGreater,
   sum,
   product,
-  prefix,
+  prefix;
+
+  static Precedence parse(TokenKind kind) {
+    return switch (kind) {
+      TokenKind.plus || TokenKind.minus => sum,
+      TokenKind.asterisk || TokenKind.slash => product,
+      _ => lowest,
+    };
+  }
+
+  bool operator >=(Precedence other) {
+    return this >= other;
+  }
 }

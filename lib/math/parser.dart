@@ -19,7 +19,7 @@ class Parser {
 
   Statement _parseStatement(Token token) {
     return switch (token.kind) {
-      TokenKind.illegal => throw ParseError("Illegal token '$token' found"),
+      TokenKind.illegal => throw ParseException("Illegal token '$token' found"),
       _ => _parseExpressionStatement(token),
     };
   }
@@ -33,8 +33,8 @@ class Parser {
   bool _remaining() => _pos + 1 < input.length;
 }
 
-class ParseError extends Error {
+class ParseException implements Exception {
   final String message;
 
-  ParseError(this.message) : super();
+  ParseException(this.message);
 }

@@ -1,7 +1,10 @@
 enum TokenKind {
   number,
   ident,
-  operator,
+  plus,
+  minus,
+  asterisk,
+  slash,
   leftParen,
   rightParen,
   illegal;
@@ -11,7 +14,10 @@ enum TokenKind {
     return switch (this) {
       TokenKind.number => 'number',
       TokenKind.ident => 'ident',
-      TokenKind.operator => 'operator',
+      TokenKind.plus => 'plus',
+      TokenKind.minus => 'minus',
+      TokenKind.asterisk => 'asterisk',
+      TokenKind.slash => 'slash',
       TokenKind.leftParen => 'leftParen',
       TokenKind.rightParen => 'rightParen',
       TokenKind.illegal => 'illegal',
@@ -80,7 +86,7 @@ class Lexer {
       }
 
       if (operators.contains(next)) {
-        tokens.add(Token(TokenKind.operator, _currentString()));
+        tokens.add(_readOperator(_pos));
         continue;
       }
 
@@ -137,5 +143,33 @@ class Lexer {
     }
 
     return Token(TokenKind.ident, _getRange(start, stop));
+  }
+
+  Token _readOperator(int start) {
+    var stop = start + 1;
+
+    while (_remaining()) {
+      var next = _next();
+      if (operators.contains(next)) continue;
+
+      stop = _pos;
+      _previous();
+      break;
+    }
+
+    var value = _getRange(start, stop);
+    var kind = switch (value) {
+      '+' => TokenKind.plus,
+      '-' => TokenKind.minus,
+      '*' => TokenKind.asterisk,
+      '/' => TokenKind.slash,
+      _ => TokenKind.illegal,
+    };
+
+    if (kind == TokenKind.illegal) {
+      return Token(TokenKind.illegal, 'Invalid operator: $value');
+    } else {
+      return Token(kind);
+    }
   }
 }

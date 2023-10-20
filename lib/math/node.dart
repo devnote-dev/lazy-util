@@ -24,6 +24,26 @@ class Identifier extends Expression {
   Identifier(this.value);
 }
 
+enum PrefixKind {
+  minus,
+  tilde;
+
+  static PrefixKind parse(TokenKind kind) {
+    return switch (kind) {
+      TokenKind.minus => minus,
+      // TokenKind.tilde => tilde,
+      _ => throw ArgumentError('Invalid prefix operator: $kind'),
+    };
+  }
+}
+
+class Prefix extends Expression {
+  final PrefixKind prefix;
+  final Expression expr;
+
+  Prefix(this.prefix, this.expr);
+}
+
 enum OperatorKind {
   add,
   subtract,

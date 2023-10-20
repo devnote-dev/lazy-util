@@ -1,5 +1,3 @@
-import 'reader.dart';
-
 enum TokenKind {
   number,
   ident,
@@ -56,32 +54,33 @@ class Lexer {
   // '*' | '+' | '-' | '/'
   final operators = const [42, 43, 45, 47];
 
-  late final Reader reader;
+  late final List<int> _input;
+  int _pos = -1;
 
   Lexer(String input) {
-    reader = Reader(input);
+    _input = input.runes.toList()..add(0);
   }
 
   List<Token> read() {
     final tokens = <Token>[];
 
-    while (reader.remaining()) {
-      var next = reader.next();
+    while (_remaining()) {
+      var next = _next();
 
       // '\n' && ' '
       if (next == 10 || next == 32) continue;
       if (next >= 48 && next <= 57) {
-        tokens.add(_readNumber(reader.pos));
+        tokens.add(_readNumber(_pos));
         continue;
       }
 
       if (next >= 65 && next <= 90 || next >= 97 && next <= 122) {
-        tokens.add(_readIdent(reader.pos));
+        tokens.add(_readIdent(_pos));
         continue;
       }
 
       if (operators.contains(next)) {
-        tokens.add(Token(TokenKind.operator, reader.currentString));
+        tokens.add(Token(TokenKind.operator, _currentString()));
         continue;
       }
 
@@ -96,39 +95,47 @@ class Lexer {
       }
       if (next == 0) break;
 
-      tokens.add(Token(TokenKind.illegal, reader.currentString));
+      tokens.add(Token(TokenKind.illegal, _currentString()));
     }
 
     return tokens;
   }
 
+  int _next() => _input[++_pos];
+  void _previous() => --_pos;
+  bool _remaining() => _pos + 1 < _input.length;
+
+  String _currentString() => String.fromCharCode(_input[_pos]);
+  String _getRange(int start, int stop) =>
+      String.fromCharCodes(_input.sublist(start, stop));
+
   Token _readNumber(int start) {
     var stop = start + 1;
 
-    while (reader.remaining()) {
-      var next = reader.next();
+    while (_remaining()) {
+      var next = _next();
       if (next >= 48 && next <= 57) continue;
 
-      stop = reader.pos;
-      reader.previous();
+      stop = _pos;
+      _previous();
       break;
     }
 
-    return Token(TokenKind.number, reader.getRange(start, stop));
+    return Token(TokenKind.number, _getRange(start, stop));
   }
 
   Token _readIdent(int start) {
     var stop = start + 1;
 
-    while (reader.remaining()) {
-      var next = reader.next();
+    while (_remaining()) {
+      var next = _next();
       if (next >= 65 && next <= 90 || next >= 97 && next <= 122) continue;
 
-      stop = reader.pos;
-      reader.previous();
+      stop = _pos;
+      _previous();
       break;
     }
 
-    return Token(TokenKind.ident, reader.getRange(start, stop));
+    return Token(TokenKind.ident, _getRange(start, stop));
   }
 }

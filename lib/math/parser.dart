@@ -25,11 +25,99 @@ class Parser {
   }
 
   Statement _parseExpressionStatement(Token token) {
-    return Statement(); // TODO!
+    var expr = _parseExpression(Precedence.lowest);
+
+    return ExpressionStatement(expr);
   }
 
+  Expression _parseExpression(Precedence prec) {
+    var left = _parsePrefixFn(_current);
+    if (left == null) {
+      throw ParseException('Cannot parse prefix for type $_current');
+    }
+
+    while (true) {
+      var peek = _peek();
+      if (peek == null) throw ParseException('Unexpected End of File');
+      if (prec >= Precedence.parse(peek.kind)) break;
+
+      var infix = _parseInfixFn(peek, left!);
+      if (infix == null) break;
+      left = infix;
+    }
+
+    return left!;
+  }
+
+  Expression? _parsePrefixFn(Token token) {
+    return switch (token.kind) {
+      TokenKind.number => _parseNumber(token),
+      TokenKind.ident => Identifier(token.value!),
+      TokenKind.minus => _parsePrefixExpression(token),
+      TokenKind.leftParen => _parseGroupedExpression(),
+      _ => null,
+    };
+  }
+
+  Expression _parsePrefixExpression(Token token) {
+    var prefix = PrefixKind.parse(token.kind);
+    ++_pos;
+    var expr = _parseExpression(Precedence.prefix);
+
+    return Prefix(prefix, expr);
+  }
+
+  Expression? _parseInfixFn(Token token, Expression expr) {
+    return switch (token.kind) {
+      TokenKind.plus ||
+      TokenKind.minus ||
+      TokenKind.asterisk ||
+      TokenKind.slash =>
+        _parseInfixExpression(expr),
+      TokenKind.leftParen => _parseGroupedExpression(),
+      _ => null,
+    };
+  }
+
+  Expression _parseInfixExpression(Expression left) {
+    var kind = OperatorKind.parse(_next().value!);
+    ++_pos;
+    var prec = Precedence.parse(_current.kind);
+    var right = _parseExpression(prec);
+
+    return Operator(left, kind, right);
+  }
+
+  Expression _parseGroupedExpression() {
+    ++_pos;
+    var expr = _parseExpression(Precedence.lowest);
+    _expectNext(TokenKind.rightParen);
+
+    return expr;
+  }
+
+  Expression _parseNumber(Token token) {
+    var value = double.parse(token.value!);
+    // var peek = _peek();
+
+    // if (peek != null && peek.kind == TokenKind.ident) {
+    //   ++_pos;
+    //   return Number(value, peek.value);
+    // }
+
+    return Number(value);
+  }
+
+  void _expectNext(TokenKind kind) {
+    var token = _next();
+    if (token.kind != kind) {
+      throw ParseException('Expected token $kind; got ${token.kind}');
+    }
+  }
+
+  Token get _current => input[_pos];
   Token _next() => input[++_pos];
-  // void _previous() => --_pos;
+  Token? _peek() => input.elementAt(_pos);
   bool _remaining() => _pos + 1 < input.length;
 }
 

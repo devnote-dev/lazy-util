@@ -34,12 +34,12 @@ void main() {
     expect(
         lexer.read(),
         equals([
-          Token(TokenKind.operator, '+'),
-          Token(TokenKind.operator, '-'),
+          Token(TokenKind.plus),
+          Token(TokenKind.minus),
           Token(TokenKind.leftParen),
-          Token(TokenKind.operator, '*'),
+          Token(TokenKind.asterisk),
           Token(TokenKind.rightParen),
-          Token(TokenKind.operator, '/'),
+          Token(TokenKind.slash),
         ]));
   });
 }

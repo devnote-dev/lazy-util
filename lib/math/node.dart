@@ -40,15 +40,13 @@ enum Operator {
   divide,
   tilde;
 
-  static Operator parse(TokenKind kind) {
-    return switch (kind) {
-      TokenKind.plus => add,
-      TokenKind.minus => subtract,
-      TokenKind.asterisk => multiply,
-      TokenKind.slash => divide,
-      _ => throw ArgumentError('Invalid operator: $kind'),
-    };
-  }
+  static Operator parse(TokenKind kind) => switch (kind) {
+        TokenKind.plus => add,
+        TokenKind.minus => subtract,
+        TokenKind.asterisk => multiply,
+        TokenKind.slash => divide,
+        _ => throw ArgumentError('Invalid operator: $kind'),
+      };
 
   @override
   String toString() => switch (this) {
@@ -89,15 +87,11 @@ enum Precedence {
   product,
   prefix;
 
-  static Precedence parse(TokenKind kind) {
-    return switch (kind) {
-      TokenKind.plus || TokenKind.minus => sum,
-      TokenKind.asterisk || TokenKind.slash => product,
-      _ => lowest,
-    };
-  }
+  static Precedence parse(TokenKind kind) => switch (kind) {
+        TokenKind.plus || TokenKind.minus => sum,
+        TokenKind.asterisk || TokenKind.slash => product,
+        _ => lowest,
+      };
 
-  bool operator >=(Precedence other) {
-    return index >= other.index;
-  }
+  bool operator >=(Precedence other) => index >= other.index;
 }

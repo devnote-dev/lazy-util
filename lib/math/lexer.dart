@@ -10,19 +10,17 @@ enum TokenKind {
   illegal;
 
   @override
-  String toString() {
-    return switch (this) {
-      TokenKind.number => 'number',
-      TokenKind.ident => 'ident',
-      TokenKind.plus => 'plus',
-      TokenKind.minus => 'minus',
-      TokenKind.asterisk => 'asterisk',
-      TokenKind.slash => 'slash',
-      TokenKind.leftParen => 'leftParen',
-      TokenKind.rightParen => 'rightParen',
-      TokenKind.illegal => 'illegal',
-    };
-  }
+  String toString() => switch (this) {
+        TokenKind.number => 'number',
+        TokenKind.ident => 'ident',
+        TokenKind.plus => 'plus',
+        TokenKind.minus => 'minus',
+        TokenKind.asterisk => 'asterisk',
+        TokenKind.slash => 'slash',
+        TokenKind.leftParen => 'leftParen',
+        TokenKind.rightParen => 'rightParen',
+        TokenKind.illegal => 'illegal',
+      };
 }
 
 class Token {

@@ -17,12 +17,10 @@ class Parser {
     return stmts;
   }
 
-  Statement _parseStatement(Token token) {
-    return switch (token.kind) {
-      TokenKind.illegal => throw ParseException(token.value!),
-      _ => _parseExpressionStatement(token),
-    };
-  }
+  Statement _parseStatement(Token token) => switch (token.kind) {
+        TokenKind.illegal => throw ParseException(token.value!),
+        _ => _parseExpressionStatement(token),
+      };
 
   Statement _parseExpressionStatement(Token token) {
     var expr = _parseExpression(Precedence.lowest);
@@ -50,15 +48,13 @@ class Parser {
     return left!;
   }
 
-  Expression? _parsePrefixFn(Token token) {
-    return switch (token.kind) {
-      TokenKind.number => _parseNumber(token),
-      TokenKind.ident => Identifier(token.value!),
-      TokenKind.minus => _parsePrefix(token),
-      TokenKind.leftParen => _parseGroupedExpression(),
-      _ => null,
-    };
-  }
+  Expression? _parsePrefixFn(Token token) => switch (token.kind) {
+        TokenKind.number => _parseNumber(token),
+        TokenKind.ident => Identifier(token.value!),
+        TokenKind.minus => _parsePrefix(token),
+        TokenKind.leftParen => _parseGroupedExpression(),
+        _ => null,
+      };
 
   Expression _parsePrefix(Token token) {
     var op = Operator.parse(token.kind);
@@ -68,17 +64,16 @@ class Parser {
     return Prefix(op, expr);
   }
 
-  Expression? _parseInfixFn(Token token, Expression expr) {
-    return switch (token.kind) {
-      TokenKind.plus ||
-      TokenKind.minus ||
-      TokenKind.asterisk ||
-      TokenKind.slash =>
-        _parseInfix(expr),
-      TokenKind.leftParen => _parseGroupedExpression(),
-      _ => null,
-    };
-  }
+  Expression? _parseInfixFn(Token token, Expression expr) =>
+      switch (token.kind) {
+        TokenKind.plus ||
+        TokenKind.minus ||
+        TokenKind.asterisk ||
+        TokenKind.slash =>
+          _parseInfix(expr),
+        TokenKind.leftParen => _parseGroupedExpression(),
+        _ => null,
+      };
 
   Expression _parseInfix(Expression left) {
     var op = Operator.parse(_next().kind);

@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 
 import '../math/lexer.dart';
+import '../math/parser.dart';
 
 class MathCommand extends Command<int> {
   @override
@@ -17,7 +18,16 @@ class MathCommand extends Command<int> {
     }
 
     final lexer = Lexer(argResults!.arguments.join());
-    print(lexer.read());
+    final tokens = lexer.read();
+    print(tokens);
+
+    final parser = Parser(tokens);
+    try {
+      print(parser.parse());
+    } on ParseException catch (e) {
+      print('Error: ${e.message}');
+      return 1;
+    }
 
     return 0;
   }

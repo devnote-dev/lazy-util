@@ -10,18 +10,27 @@ class ExpressionStatement extends Statement {
   final Expression expr;
 
   ExpressionStatement(this.expr);
+
+  @override
+  String toString() => expr.toString();
 }
 
 class Number extends Expression {
   final double value;
 
   Number(this.value);
+
+  @override
+  String toString() => 'Number($value)';
 }
 
 class Identifier extends Expression {
   final String value;
 
   Identifier(this.value);
+
+  @override
+  String toString() => 'Identifier($value)';
 }
 
 enum Operator {
@@ -40,6 +49,15 @@ enum Operator {
       _ => throw ArgumentError('Invalid operator: $kind'),
     };
   }
+
+  @override
+  String toString() => switch (this) {
+        add => '+',
+        subtract => '-',
+        multiply => '*',
+        divide => '/',
+        tilde => '~',
+      };
 }
 
 class Prefix extends Expression {
@@ -47,6 +65,9 @@ class Prefix extends Expression {
   final Expression expr;
 
   Prefix(this.prefix, this.expr);
+
+  @override
+  String toString() => 'Prefix($prefix$expr)';
 }
 
 class Infix extends Expression {
@@ -55,6 +76,9 @@ class Infix extends Expression {
   final Expression right;
 
   Infix(this.left, this.operator, this.right);
+
+  @override
+  String toString() => 'Infix($left $operator $right)';
 }
 
 enum Precedence {

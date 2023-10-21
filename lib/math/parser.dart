@@ -19,7 +19,7 @@ class Parser {
 
   Statement _parseStatement(Token token) {
     return switch (token.kind) {
-      TokenKind.illegal => throw ParseException("Illegal token '$token' found"),
+      TokenKind.illegal => throw ParseException(token.value!),
       _ => _parseExpressionStatement(token),
     };
   }

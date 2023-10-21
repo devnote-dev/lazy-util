@@ -46,9 +46,14 @@ class Token {
 
     if (value != null) {
       buffer.write(', ');
-      if (kind == TokenKind.ident) buffer.write('"');
+      if (kind == TokenKind.ident || kind == TokenKind.illegal) {
+        buffer.write('"');
+      }
+
       buffer.write(value);
-      if (kind == TokenKind.ident) buffer.write('"');
+      if (kind == TokenKind.ident || kind == TokenKind.illegal) {
+        buffer.write('"');
+      }
     }
     buffer.write(')');
 

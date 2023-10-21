@@ -74,6 +74,6 @@ enum Precedence {
   }
 
   bool operator >=(Precedence other) {
-    return this >= other;
+    return index >= other.index;
   }
 }

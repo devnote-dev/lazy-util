@@ -38,7 +38,8 @@ class Parser {
 
     while (true) {
       var peek = _peek();
-      if (peek == null) throw ParseException('Unexpected End of File');
+      // if (peek == null) throw ParseException('Unexpected End of File');
+      if (peek == null) break;
       if (prec >= Precedence.parse(peek.kind)) break;
 
       var infix = _parseInfixFn(peek, left!);
@@ -117,7 +118,7 @@ class Parser {
 
   Token get _current => input[_pos];
   Token _next() => input[++_pos];
-  Token? _peek() => input.elementAt(_pos);
+  Token? _peek() => _remaining() ? input[_pos + 1] : null;
   bool _remaining() => _pos + 1 < input.length;
 }
 

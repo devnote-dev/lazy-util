@@ -24,49 +24,37 @@ class Identifier extends Expression {
   Identifier(this.value);
 }
 
-enum PrefixKind {
-  minus,
+enum Operator {
+  add,
+  subtract,
+  multiply,
+  divide,
   tilde;
 
-  static PrefixKind parse(TokenKind kind) {
+  static Operator parse(TokenKind kind) {
     return switch (kind) {
-      TokenKind.minus => minus,
-      // TokenKind.tilde => tilde,
-      _ => throw ArgumentError('Invalid prefix operator: $kind'),
+      TokenKind.plus => add,
+      TokenKind.minus => subtract,
+      TokenKind.asterisk => multiply,
+      TokenKind.slash => divide,
+      _ => throw ArgumentError('Invalid operator: $kind'),
     };
   }
 }
 
 class Prefix extends Expression {
-  final PrefixKind prefix;
+  final Operator prefix;
   final Expression expr;
 
   Prefix(this.prefix, this.expr);
 }
 
-enum OperatorKind {
-  add,
-  subtract,
-  multiply,
-  divide;
-
-  static OperatorKind parse(String value) {
-    return switch (value) {
-      '+' => add,
-      '-' => subtract,
-      '*' => multiply,
-      '/' => divide,
-      _ => throw ArgumentError('Invalid operator: $value'),
-    };
-  }
-}
-
-class Operator extends Expression {
+class Infix extends Expression {
   final Expression left;
-  final OperatorKind kind;
+  final Operator operator;
   final Expression right;
 
-  Operator(this.left, this.kind, this.right);
+  Infix(this.left, this.operator, this.right);
 }
 
 enum Precedence {

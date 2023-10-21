@@ -53,18 +53,18 @@ class Parser {
     return switch (token.kind) {
       TokenKind.number => _parseNumber(token),
       TokenKind.ident => Identifier(token.value!),
-      TokenKind.minus => _parsePrefixExpression(token),
+      TokenKind.minus => _parsePrefix(token),
       TokenKind.leftParen => _parseGroupedExpression(),
       _ => null,
     };
   }
 
-  Expression _parsePrefixExpression(Token token) {
-    var prefix = PrefixKind.parse(token.kind);
+  Expression _parsePrefix(Token token) {
+    var op = Operator.parse(token.kind);
     ++_pos;
     var expr = _parseExpression(Precedence.prefix);
 
-    return Prefix(prefix, expr);
+    return Prefix(op, expr);
   }
 
   Expression? _parseInfixFn(Token token, Expression expr) {
@@ -73,19 +73,19 @@ class Parser {
       TokenKind.minus ||
       TokenKind.asterisk ||
       TokenKind.slash =>
-        _parseInfixExpression(expr),
+        _parseInfix(expr),
       TokenKind.leftParen => _parseGroupedExpression(),
       _ => null,
     };
   }
 
-  Expression _parseInfixExpression(Expression left) {
-    var kind = OperatorKind.parse(_next().value!);
+  Expression _parseInfix(Expression left) {
+    var op = Operator.parse(_next().kind);
     ++_pos;
     var prec = Precedence.parse(_current.kind);
     var right = _parseExpression(prec);
 
-    return Operator(left, kind, right);
+    return Infix(left, op, right);
   }
 
   Expression _parseGroupedExpression() {

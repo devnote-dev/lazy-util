@@ -95,12 +95,12 @@ class Parser {
 
   Expression _parseNumber(Token token) {
     var value = double.parse(token.value!);
-    // var peek = _peek();
+    var peek = _peek();
 
-    // if (peek != null && peek.kind == TokenKind.ident) {
-    //   ++_pos;
-    //   return Number(value, peek.value);
-    // }
+    if (peek != null && peek.kind == TokenKind.ident) {
+      ++_pos;
+      return Infix(Number(value), Operator.multiply, Identifier(peek.value!));
+    }
 
     return Number(value);
   }

@@ -2,6 +2,7 @@ import 'package:args/command_runner.dart';
 
 import '../math/lexer.dart';
 import '../math/parser.dart';
+import '../math/visitor.dart';
 
 class MathCommand extends Command<int> {
   @override
@@ -23,7 +24,8 @@ class MathCommand extends Command<int> {
 
     final parser = Parser(tokens);
     try {
-      print(parser.parse());
+      final stmts = parser.parse();
+      print(Visitor(stmts).visit());
     } on ParseException catch (e) {
       print('Error: ${e.message}');
       return 1;

@@ -1,3 +1,4 @@
+import 'exceptions.dart' show VisitorException;
 import 'node.dart';
 import '../units/bytes.dart';
 
@@ -63,10 +64,4 @@ class Visitor {
   Statement _next() => _input[++_pos];
   Statement? _peek() => _remaining() ? _input[_pos + 1] : null;
   bool _remaining() => _pos + 1 < _input.length;
-}
-
-class VisitorException implements Exception {
-  final String message;
-
-  VisitorException(this.message);
 }

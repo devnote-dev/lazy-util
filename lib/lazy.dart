@@ -1,5 +1,6 @@
 import 'commands/main.dart';
 
+export 'math/exceptions.dart';
 export 'math/lexer.dart';
 export 'math/node.dart';
 export 'math/parser.dart';

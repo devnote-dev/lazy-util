@@ -1,3 +1,4 @@
+import 'exceptions.dart' show ParseException;
 import 'lexer.dart';
 import 'node.dart';
 
@@ -115,10 +116,4 @@ class Parser {
   Token _next() => input[++_pos];
   Token? _peek() => _remaining() ? input[_pos + 1] : null;
   bool _remaining() => _pos + 1 < input.length;
-}
-
-class ParseException implements Exception {
-  final String message;
-
-  ParseException(this.message);
 }

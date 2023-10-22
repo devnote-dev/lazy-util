@@ -54,7 +54,7 @@ class ByteSize {
   static const PB = ByteSize._(1e15);
   static const PiB = ByteSize._(1125899906842624.0);
 
-  static ByteSize parse(String str) => switch (str) {
+  static ByteSize? parse(String str) => switch (str) {
         'KB' => KB,
         'KiB' => KiB,
         'MB' => MB,
@@ -65,7 +65,7 @@ class ByteSize {
         'TiB' => TiB,
         'PB' => PB,
         'PiB' => PiB,
-        _ => throw ArgumentError('Invalid bytesize unit: $str'),
+        _ => null,
       };
 
   const ByteSize._(this.value);

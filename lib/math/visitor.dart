@@ -3,20 +3,19 @@ import 'node.dart';
 import '../units/bytes.dart';
 
 class Visitor {
-  final List<Statement> _input;
+  final List<Expression> _input;
   int _pos = -1;
 
   Visitor(this._input);
 
-  List<Statement> visit() {
-    final stmts = <Statement>[];
+  List<Expression> visit() {
+    final exprs = <Expression>[];
 
     while (_remaining()) {
-      var stmt = _next() as ExpressionStatement;
-      stmts.add(ExpressionStatement(_visitExpression(stmt.expr)));
+      exprs.add(_visitExpression(_next()));
     }
 
-    return stmts;
+    return exprs;
   }
 
   Expression _visitExpression(Expression expr) => switch (expr) {
@@ -31,7 +30,7 @@ class Visitor {
     var peek = _peek();
     if (peek is Identifier) {
       ++_pos;
-      var value = _visitIdentifier(peek as Identifier);
+      var value = _visitIdentifier(peek);
 
       return Infix(expr, Operator.multiply, value);
     } else {
@@ -61,7 +60,7 @@ class Visitor {
     return Infix(left, expr.operator, right);
   }
 
-  Statement _next() => _input[++_pos];
-  Statement? _peek() => _remaining() ? _input[_pos + 1] : null;
+  Expression _next() => _input[++_pos];
+  Expression? _peek() => _remaining() ? _input[_pos + 1] : null;
   bool _remaining() => _pos + 1 < _input.length;
 }

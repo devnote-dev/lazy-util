@@ -25,8 +25,8 @@ class MathCommand extends Command<int> {
 
     final parser = Parser(tokens);
     try {
-      final stmts = parser.parse();
-      print(Visitor(stmts).visit());
+      final exprs = parser.parse();
+      print(Visitor(exprs).visit());
     } on ParseException catch (e) {
       print('Error: ${e.message}');
       return 1;

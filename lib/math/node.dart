@@ -2,18 +2,7 @@ import 'lexer.dart' show TokenKind;
 
 sealed class Node {}
 
-class Statement extends Node {}
-
 class Expression extends Node {}
-
-class ExpressionStatement extends Statement {
-  final Expression expr;
-
-  ExpressionStatement(this.expr);
-
-  @override
-  String toString() => expr.toString();
-}
 
 class Number extends Expression {
   final double value;

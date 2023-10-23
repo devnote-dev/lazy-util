@@ -4,29 +4,18 @@ import 'node.dart';
 
 class Parser {
   final List<Token> input;
-  int _pos = -1;
+  int _pos = 0;
 
   Parser(this.input);
 
-  List<Statement> parse() {
-    final stmts = <Statement>[];
+  List<Expression> parse() {
+    final exprs = <Expression>[];
 
     while (_remaining()) {
-      stmts.add(_parseStatement(_next()));
+      exprs.add(_parseExpression(Precedence.lowest));
     }
 
-    return stmts;
-  }
-
-  Statement _parseStatement(Token token) => switch (token.kind) {
-        TokenKind.illegal => throw ParseException(token.value!),
-        _ => _parseExpressionStatement(token),
-      };
-
-  Statement _parseExpressionStatement(Token token) {
-    var expr = _parseExpression(Precedence.lowest);
-
-    return ExpressionStatement(expr);
+    return exprs;
   }
 
   Expression _parseExpression(Precedence prec) {
@@ -54,6 +43,7 @@ class Parser {
         TokenKind.ident => Identifier(token.value!),
         TokenKind.minus => _parsePrefix(token),
         TokenKind.leftParen => _parseGroupedExpression(),
+        TokenKind.illegal => throw ParseException(token.value!),
         _ => null,
       };
 

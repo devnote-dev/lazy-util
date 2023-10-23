@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 
 import '../math/exceptions.dart';
+import '../math/interpreter.dart';
 import '../math/lexer.dart';
 import '../math/parser.dart';
 import '../math/visitor.dart';
@@ -21,16 +22,19 @@ class MathCommand extends Command<int> {
 
     final lexer = Lexer(argResults!.arguments.join());
     final tokens = lexer.read();
-    print(tokens);
 
     final parser = Parser(tokens);
     try {
-      final exprs = parser.parse();
-      print(Visitor(exprs).visit());
+      var exprs = parser.parse();
+      exprs = Visitor(exprs).visit();
+      print(Interpreter().interpret(exprs));
     } on ParseException catch (e) {
       print('Error: ${e.message}');
       return 1;
     } on VisitorException catch (e) {
+      print('Error: ${e.message}');
+      return 1;
+    } on InterpretException catch (e) {
       print('Error: ${e.message}');
       return 1;
     }

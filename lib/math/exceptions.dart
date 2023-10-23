@@ -9,3 +9,12 @@ class VisitorException implements Exception {
 
   VisitorException(this.message);
 }
+
+class InterpretException implements Exception {
+  final String message;
+
+  static InterpretException mismatch(String node, String got) =>
+      InterpretException('Expected type number for $node; got $got');
+
+  InterpretException(this.message);
+}

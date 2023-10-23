@@ -1,25 +1,33 @@
 import 'lexer.dart' show TokenKind;
 
-sealed class Node {}
+sealed class Node {
+  String type();
+}
 
-class Expression extends Node {}
+sealed class Expression extends Node {}
 
-class Number extends Expression {
+class Number implements Expression {
   final double value;
 
   Number(this.value);
 
   @override
-  String toString() => 'Number($value)';
+  String type() => 'number';
+
+  @override
+  String toString() => value.toString();
 }
 
-class Identifier extends Expression {
+class Identifier implements Expression {
   final String value;
 
   Identifier(this.value);
 
   @override
-  String toString() => 'Identifier($value)';
+  String type() => 'identifier';
+
+  @override
+  String toString() => value.toString();
 }
 
 enum Operator {
@@ -47,17 +55,20 @@ enum Operator {
       };
 }
 
-class Prefix extends Expression {
+class Prefix implements Expression {
   final Operator prefix;
   final Expression expr;
 
   Prefix(this.prefix, this.expr);
 
   @override
-  String toString() => 'Prefix($prefix$expr)';
+  String type() => 'prefix';
+
+  @override
+  String toString() => '$prefix$expr';
 }
 
-class Infix extends Expression {
+class Infix implements Expression {
   final Expression left;
   final Operator operator;
   final Expression right;
@@ -65,7 +76,10 @@ class Infix extends Expression {
   Infix(this.left, this.operator, this.right);
 
   @override
-  String toString() => 'Infix($left $operator $right)';
+  String type() => 'infix';
+
+  @override
+  String toString() => '$left $operator $right';
 }
 
 enum Precedence {

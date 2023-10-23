@@ -22,19 +22,13 @@ class MathCommand extends Command<int> {
 
     final lexer = Lexer(argResults!.arguments.join());
     final tokens = lexer.read();
-
     final parser = Parser(tokens);
+
     try {
       var exprs = parser.parse();
       exprs = Visitor(exprs).visit();
       print(Interpreter().interpret(exprs));
-    } on ParseException catch (e) {
-      print('Error: ${e.message}');
-      return 1;
-    } on VisitorException catch (e) {
-      print('Error: ${e.message}');
-      return 1;
-    } on InterpretException catch (e) {
+    } on MathException catch (e) {
       print('Error: ${e.message}');
       return 1;
     }

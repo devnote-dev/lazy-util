@@ -12,13 +12,13 @@ class Parser {
     final exprs = <Expression>[];
 
     while (_remaining()) {
-      exprs.add(_parseExpression(Precedence.lowest));
+      exprs.add(_parse(Precedence.lowest));
     }
 
     return exprs;
   }
 
-  Expression _parseExpression(Precedence prec) {
+  Expression _parse(Precedence prec) {
     var left = _parsePrefixFn(_current);
     if (left == null) {
       throw ParseException('Cannot parse prefix for type $_current');
@@ -26,7 +26,6 @@ class Parser {
 
     while (true) {
       var peek = _peek();
-      // if (peek == null) throw ParseException('Unexpected End of File');
       if (peek == null) break;
       if (prec >= Precedence.parse(peek.kind)) break;
 
@@ -50,7 +49,7 @@ class Parser {
   Expression _parsePrefix(Token token) {
     var op = Operator.parse(token.kind);
     ++_pos;
-    var expr = _parseExpression(Precedence.prefix);
+    var expr = _parse(Precedence.prefix);
 
     return Prefix(op, expr);
   }
@@ -70,14 +69,14 @@ class Parser {
     var op = Operator.parse(_next().kind);
     ++_pos;
     var prec = Precedence.parse(_current.kind);
-    var right = _parseExpression(prec);
+    var right = _parse(prec);
 
     return Infix(left, op, right);
   }
 
   Expression _parseGroupedExpression() {
     ++_pos;
-    var expr = _parseExpression(Precedence.lowest);
+    var expr = _parse(Precedence.lowest);
     _expectNext(TokenKind.rightParen);
 
     return expr;

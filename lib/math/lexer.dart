@@ -110,14 +110,6 @@ class Lexer {
     return tokens;
   }
 
-  int _next() => _input[++_pos];
-  void _previous() => --_pos;
-  bool _remaining() => _pos + 1 < _input.length;
-
-  String _currentString() => String.fromCharCode(_input[_pos]);
-  String _getRange(int start, int stop) =>
-      String.fromCharCodes(_input.sublist(start, stop));
-
   Token _readNumber(int start) {
     var stop = start + 1;
 
@@ -175,4 +167,12 @@ class Lexer {
       return Token(kind);
     }
   }
+
+  int _next() => _input[++_pos];
+  void _previous() => --_pos;
+  bool _remaining() => _pos + 1 < _input.length;
+
+  String _currentString() => String.fromCharCode(_input[_pos]);
+  String _getRange(int start, int stop) =>
+      String.fromCharCodes(_input.sublist(start, stop));
 }

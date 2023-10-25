@@ -12,18 +12,17 @@ class Visitor {
     final exprs = <Expression>[];
 
     while (_remaining()) {
-      exprs.add(_visitExpression(_next()));
+      exprs.add(_visit(_next()));
     }
 
     return exprs;
   }
 
-  Expression _visitExpression(Expression expr) => switch (expr) {
+  Expression _visit(Expression expr) => switch (expr) {
         Number ex => _visitNumber(ex),
         Identifier ex => _visitIdentifier(ex),
         Prefix ex => _visitPrefix(ex),
         Infix ex => _visitInfix(ex),
-        _ => throw 'unreachable',
       };
 
   Expression _visitNumber(Number expr) {
@@ -48,14 +47,14 @@ class Visitor {
   }
 
   Expression _visitPrefix(Prefix expr) {
-    var value = _visitExpression(expr.expr);
+    var value = _visit(expr.expr);
 
     return Prefix(expr.prefix, value);
   }
 
   Expression _visitInfix(Infix expr) {
-    var left = _visitExpression(expr.left);
-    var right = _visitExpression(expr.right);
+    var left = _visit(expr.left);
+    var right = _visit(expr.right);
 
     return Infix(left, expr.operator, right);
   }

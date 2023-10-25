@@ -112,9 +112,15 @@ class Lexer {
 
   Token _readNumber(int start) {
     var stop = start + 1;
+    var float = false;
 
     while (_remaining()) {
       var next = _next();
+      if (next == 46) {
+        if (float) return Token(TokenKind.illegal, _getRange(start, _pos + 1));
+        float = true;
+        continue;
+      }
       if (next >= 48 && next <= 57) continue;
 
       stop = _pos;

@@ -4,9 +4,7 @@ sealed class Node {
   String type();
 }
 
-sealed class Expression extends Node {}
-
-class Number implements Expression {
+class Number implements Node {
   final double value;
 
   Number(this.value);
@@ -18,7 +16,7 @@ class Number implements Expression {
   String toString() => value.toString();
 }
 
-class Identifier implements Expression {
+class Identifier implements Node {
   final String value;
 
   Identifier(this.value);
@@ -55,9 +53,9 @@ enum Operator {
       };
 }
 
-class Prefix implements Expression {
+class Prefix implements Node {
   final Operator prefix;
-  final Expression expr;
+  final Node expr;
 
   Prefix(this.prefix, this.expr);
 
@@ -68,10 +66,10 @@ class Prefix implements Expression {
   String toString() => '$prefix$expr';
 }
 
-class Infix implements Expression {
-  final Expression left;
+class Infix implements Node {
+  final Node left;
   final Operator operator;
-  final Expression right;
+  final Node right;
 
   Infix(this.left, this.operator, this.right);
 

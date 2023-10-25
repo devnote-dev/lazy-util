@@ -8,17 +8,17 @@ class Parser {
 
   Parser(this.input);
 
-  List<Expression> parse() {
-    final exprs = <Expression>[];
+  List<Node> parse() {
+    final nodes = <Node>[];
 
     while (_remaining()) {
-      exprs.add(_parse(Precedence.lowest));
+      nodes.add(_parse(Precedence.lowest));
     }
 
-    return exprs;
+    return nodes;
   }
 
-  Expression _parse(Precedence prec) {
+  Node _parse(Precedence prec) {
     var left = _parsePrefixFn(_current);
     if (left == null) {
       throw ParseException('Cannot parse prefix for type $_current');
@@ -37,16 +37,16 @@ class Parser {
     return left!;
   }
 
-  Expression? _parsePrefixFn(Token token) => switch (token.kind) {
+  Node? _parsePrefixFn(Token token) => switch (token.kind) {
         TokenKind.number => _parseNumber(token),
         TokenKind.ident => Identifier(token.value!),
         TokenKind.minus => _parsePrefix(token),
-        TokenKind.leftParen => _parseGroupedExpression(),
+        TokenKind.leftParen => _parseGroupedNode(),
         TokenKind.illegal => throw ParseException(token.value!),
         _ => null,
       };
 
-  Expression _parsePrefix(Token token) {
+  Node _parsePrefix(Token token) {
     var op = Operator.parse(token.kind);
     ++_pos;
     var expr = _parse(Precedence.prefix);
@@ -54,18 +54,17 @@ class Parser {
     return Prefix(op, expr);
   }
 
-  Expression? _parseInfixFn(Token token, Expression expr) =>
-      switch (token.kind) {
+  Node? _parseInfixFn(Token token, Node expr) => switch (token.kind) {
         TokenKind.plus ||
         TokenKind.minus ||
         TokenKind.asterisk ||
         TokenKind.slash =>
           _parseInfix(expr),
-        TokenKind.leftParen => _parseGroupedExpression(),
+        TokenKind.leftParen => _parseGroupedNode(),
         _ => null,
       };
 
-  Expression _parseInfix(Expression left) {
+  Node _parseInfix(Node left) {
     var op = Operator.parse(_next().kind);
     ++_pos;
     var prec = Precedence.parse(_current.kind);
@@ -74,7 +73,7 @@ class Parser {
     return Infix(left, op, right);
   }
 
-  Expression _parseGroupedExpression() {
+  Node _parseGroupedNode() {
     ++_pos;
     var expr = _parse(Precedence.lowest);
     _expectNext(TokenKind.rightParen);
@@ -82,7 +81,7 @@ class Parser {
     return expr;
   }
 
-  Expression _parseNumber(Token token) {
+  Node _parseNumber(Token token) {
     var value = double.parse(token.value!);
     var peek = _peek();
 
